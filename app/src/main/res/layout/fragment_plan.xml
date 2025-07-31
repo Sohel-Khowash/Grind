@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragments.PlanFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Calorie Section -->
+            <EditText
+                android:id="@+id/calorieInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter today's calories"
+                android:inputType="number" />
+
+            <Button
+                android:id="@+id/saveCalorieBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Save Calories" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Calories Over Time"
+                android:textStyle="bold"
+                android:layout_marginTop="12dp" />
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/calorieChart"
+                android:layout_width="match_parent"
+                android:layout_height="300dp" />
+
+            <!-- Weight Section -->
+            <EditText
+                android:id="@+id/weightInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter today's weight (kg)"
+                android:inputType="numberDecimal"
+                android:layout_marginTop="16dp" />
+
+            <Button
+                android:id="@+id/saveWeightBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Save Weight" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Weight Over Time"
+                android:textStyle="bold"
+                android:layout_marginTop="12dp" />
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/weightChart"
+                android:layout_width="match_parent"
+                android:layout_height="300dp" />
+
+            <!-- Height Input Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
+                android:gravity="center_vertical">
+
+                <EditText
+                    android:id="@+id/heightInput"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Enter height (meters)"
+                    android:inputType="numberDecimal" />
+
+                <Button
+                    android:id="@+id/saveHeightBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Save Height"
+                    android:layout_marginStart="8dp" />
+
+            </LinearLayout>
+
+            <!-- BMI Section -->
+            <TextView
+                android:id="@+id/bmiLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="BMI Status"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp" />
+
+            <ProgressBar
+                android:id="@+id/bmiGauge"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:max="40"
+                android:progress="0"
+                android:progressTint="@color/red"
+                android:layout_marginTop="8dp" />
+
+            <TextView
+                android:id="@+id/bmiValueText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BMI: 0.0"
+                android:textSize="16sp"
+                android:layout_marginTop="8dp" />
+
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>

@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Grind</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="desc_full_body_workout">A comprehensive workout targeting all major muscle groups to improve overall strength, endurance, and flexibility.</string>
+    <string name="desc_upper_body_workout">Focuses on the chest, back, shoulders, and arms. Helps build upper body strength and muscle definition.</string>
+    <string name="desc_lower_body_workout">Targets glutes, hamstrings, quads, and calves. Improves leg power, balance, and mobility.</string>
+    <string name="desc_chest_workout">Includes exercises like push-ups and bench press to develop chest muscles and increase upper body strength.</string>
+    <string name="desc_leg_workout">Aims to build strong legs using squats, lunges, and leg presses. Enhances stability and athletic performance.</string>
+    <string name="desc_back_workout">Strengthens the upper and lower back with exercises like rows and deadlifts. Improves posture and reduces back pain.</string>
+    <string name="desc_hip_workout">Engages glutes and hip flexors to improve mobility, stability, and overall lower body strength.</string>
+    <string name="desc_waist_workout">Targets the obliques and core muscles for a toned waistline and enhanced core strength.</string>
+    <string name="desc_bicep_workout">Focuses on arm curls and similar movements to build and tone the biceps for arm strength and size.</string>
+    <string name="desc_tricep_workout">Involves exercises like tricep dips and extensions to tone and strengthen the back of the upper arm.</string>
+    <string name="desc_abdomen_workout">Strengthens core muscles including abs and obliques. Essential for stability and posture.</string>
+    <string name="desc_shoulder_workout">Improves shoulder strength and mobility with overhead presses, lateral raises, and more.</string>
+    <string name="desc_arm_workout">Combines bicep and tricep exercises to enhance arm size, shape, and endurance.</string>
+    <string name="desc_ankle_workout">Focuses on ankle mobility and strength to prevent injuries and support better movement mechanics.</string>
+</resources>

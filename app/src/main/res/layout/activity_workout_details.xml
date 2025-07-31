@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#121323"
+    tools:context=".activities.WorkoutDetailsActivity">
+
+    <!-- Workout Image -->
+    <ImageView
+        android:id="@+id/workoutimg"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:layout_marginBottom="16dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="Workout Image"
+        tools:src="@drawable/placeholder" />
+
+    <!-- Workout Description -->
+    <TextView
+        android:id="@+id/workoutdescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Full Body Strength and Conditioning"
+        android:textColor="@android:color/white"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:lineSpacingExtra="4dp"
+        android:layout_marginBottom="12dp"
+        android:maxLines="3"
+        android:ellipsize="end" />
+
+    <!-- RecyclerView for Exercises -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/workoutdetailsrv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingBottom="8dp"
+        tools:listitem="@layout/item_workout_step" />
+</LinearLayout>
