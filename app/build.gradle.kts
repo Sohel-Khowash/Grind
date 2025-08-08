@@ -58,4 +58,5 @@ dependencies {
     implementation (libs.mpandroidchart)
     implementation (libs.glide)
     annotationProcessor (libs.compiler)
+    implementation (libs.smoothbottombar)
 }

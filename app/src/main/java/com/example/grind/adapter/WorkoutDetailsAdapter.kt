@@ -1,56 +1,65 @@
 package com.example.grind.adapter
 
-import android.content.Intent
-import android.net.Uri
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.core.net.toUri
+import android.widget.EditText
 import androidx.recyclerview.widget.RecyclerView
 import com.example.grind.R
-import com.example.grind.models.WorkoutDetailsClass
+import com.example.grind.models.WorkoutStep
 
-class WorkoutDetailsAdapter(private val list: List<WorkoutDetailsClass>) :
-    RecyclerView.Adapter<WorkoutDetailsAdapter.DetailViewHolder>() {
+class WorkoutStepAdapter(
+    private val steps: MutableList<WorkoutStep>
+) : RecyclerView.Adapter<WorkoutStepAdapter.StepViewHolder>() {
 
-    class DetailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val title: TextView = itemView.findViewById(R.id.workoutdetailTitle)
-        val image: ImageView = itemView.findViewById(R.id.workoutdetailImage)
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StepViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.workout_details_rv_item, parent, false)
-        return DetailViewHolder(view)
+            .inflate(R.layout.item_workout_step, parent, false)
+        return StepViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: DetailViewHolder, position: Int) {
-        val item = list[position]
-        holder.title.text = item.title
-        holder.image.setImageResource(item.imageResId)
+    override fun onBindViewHolder(holder: StepViewHolder, position: Int) {
+        val step = steps[position]
+        holder.bind(step)
+    }
 
-        holder.itemView.setOnClickListener {
-            val context = holder.itemView.context
-            val url = item.youtubeUrl
+    override fun getItemCount(): Int = steps.size
 
-            if (url.isNotBlank()) {
-                val youtubeIntent = Intent(Intent.ACTION_VIEW, url.toUri()).apply {
-                    setPackage("com.google.android.youtube") // Try to open in YouTube app
+    inner class StepViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val etStepDesc: EditText = itemView.findViewById(R.id.etStepDesc)
+        private val etStepLink: EditText = itemView.findViewById(R.id.etStepLink)
+
+        fun bind(step: WorkoutStep) {
+            etStepDesc.setText(step.stepDescription)
+            etStepLink.setText(step.stepLink)
+
+            // Remove previous listeners to avoid duplication
+            etStepDesc.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    step.stepDescription = s.toString()
                 }
 
-                // Try YouTube app first, fallback to browser if not available
-                if (youtubeIntent.resolveActivity(context.packageManager) != null) {
-                    context.startActivity(youtubeIntent)
-                } else {
-                    // Fallback to browser
-                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                    context.startActivity(browserIntent)
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            })
+
+            etStepLink.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    step.stepLink = s.toString()
                 }
-            }
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            })
         }
     }
 
-    override fun getItemCount(): Int = list.size
+    fun addStep(step: WorkoutStep) {
+        steps.add(step)
+        notifyItemInserted(steps.size - 1)
+    }
+
+    fun getSteps(): List<WorkoutStep> = steps
 }

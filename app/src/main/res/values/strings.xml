@@ -16,4 +16,8 @@
     <string name="desc_shoulder_workout">Improves shoulder strength and mobility with overhead presses, lateral raises, and more.</string>
     <string name="desc_arm_workout">Combines bicep and tricep exercises to enhance arm size, shape, and endurance.</string>
     <string name="desc_ankle_workout">Focuses on ankle mobility and strength to prevent injuries and support better movement mechanics.</string>
+    <string name="profile">profile\n</string>
+    <string name="plan">plan</string>
+    <string name="discover">discover\n</string>
+    <string name="home">home</string>
 </resources>

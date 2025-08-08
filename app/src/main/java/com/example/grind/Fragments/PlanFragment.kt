@@ -40,7 +40,6 @@ class PlanFragment : Fragment() {
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     private val displayDateFormat = SimpleDateFormat("MMM dd", Locale.getDefault())
 
-    // Variables to hold latest saved values
     private var latestWeight: Float? = null
     private var latestHeight: Float? = null
 
@@ -49,11 +48,10 @@ class PlanFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_plan, container, false)
 
-        // Bind views
         calorieInput = view.findViewById(R.id.calorieInput)
         saveCalorieBtn = view.findViewById(R.id.saveCalorieBtn)
         calorieChart = view.findViewById(R.id.calorieChart)
@@ -71,7 +69,6 @@ class PlanFragment : Fragment() {
 
         database = FirebaseDatabase.getInstance().reference
 
-        // Load saved weight and height to update BMI initially
         fetchLatestWeightAndHeight()
 
         saveCalorieBtn.setOnClickListener {
@@ -125,7 +122,6 @@ class PlanFragment : Fragment() {
                 }
         }
 
-        // Load charts with realtime updates
         loadCalorieChart()
         loadWeightChart()
 
@@ -135,13 +131,11 @@ class PlanFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Detect current UI mode and set text colors accordingly
         val nightModeFlags = requireContext().resources.configuration.uiMode and
                 Configuration.UI_MODE_NIGHT_MASK
 
         when (nightModeFlags) {
             Configuration.UI_MODE_NIGHT_YES -> {
-                // Dark mode active, set text color to white
                 calorieInput.setTextColor(Color.WHITE)
                 weightInput.setTextColor(Color.WHITE)
                 heightInput.setTextColor(Color.WHITE)
@@ -149,7 +143,6 @@ class PlanFragment : Fragment() {
                 bmiLabel.setTextColor(Color.WHITE)
             }
             Configuration.UI_MODE_NIGHT_NO, Configuration.UI_MODE_NIGHT_UNDEFINED -> {
-                // Light mode active or undefined, set text color to black
                 calorieInput.setTextColor(Color.BLACK)
                 weightInput.setTextColor(Color.BLACK)
                 heightInput.setTextColor(Color.BLACK)
@@ -161,7 +154,6 @@ class PlanFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        // Remove Firebase listeners to avoid leaks & crashes
         calorieListener?.let { database.child("calories").removeEventListener(it) }
         weightListener?.let { database.child("weight").removeEventListener(it) }
     }
@@ -179,14 +171,16 @@ class PlanFragment : Fragment() {
                     updateBMIDisplay()
                 }
         }.addOnFailureListener {
-            Toast.makeText(context, "Failed to load height. Using default.", Toast.LENGTH_SHORT).show()
+            if (isAdded) {
+                Toast.makeText(requireContext(), "Failed to load height. Using default.", Toast.LENGTH_SHORT).show()
+            }
             latestHeight = 1.75f
             updateBMIDisplay()
         }
     }
 
     private fun updateBMIDisplay() {
-        if (!isAdded) return // Fragment not attached, skip
+        if (!isAdded) return
 
         val weight = latestWeight
         val height = latestHeight
@@ -228,7 +222,7 @@ class PlanFragment : Fragment() {
     private fun loadCalorieChart() {
         calorieListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if (!isAdded || view == null) return  // Fragment not attached, skip
+                if (!isAdded || view == null) return
 
                 val entries = mutableListOf<Entry>()
                 val labels = mutableListOf<String>()
@@ -279,7 +273,7 @@ class PlanFragment : Fragment() {
     private fun loadWeightChart() {
         weightListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if (!isAdded || view == null) return  // Fragment not attached, skip
+                if (!isAdded || view == null) return
 
                 val entries = mutableListOf<Entry>()
                 val labels = mutableListOf<String>()

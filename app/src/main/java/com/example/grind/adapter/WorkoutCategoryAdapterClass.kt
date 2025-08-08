@@ -10,37 +10,38 @@ import com.example.grind.R
 import com.example.grind.models.WorkoutCategoryClass
 
 class WorkoutCategoryAdapterClass(
-    private val workoutcategorydatalist: ArrayList<WorkoutCategoryClass>
-) : RecyclerView.Adapter<WorkoutCategoryAdapterClass.ViewholderClass>() {
+    private val workoutCategoryList: ArrayList<WorkoutCategoryClass>
+) : RecyclerView.Adapter<WorkoutCategoryAdapterClass.ViewHolder>() {
+
+    // Lambda for handling item click events
     var onItemClick: ((WorkoutCategoryClass) -> Unit)? = null
 
-    class ViewholderClass(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val rvImage: ImageView = itemView.findViewById(R.id.workcatimg)
-        val rvduration: TextView = itemView.findViewById(R.id.duration)
-        val rvkcal: TextView = itemView.findViewById(R.id.kcal)
-        val rvcnt: TextView = itemView.findViewById(R.id.noexcercise)
-        val rvinfo:TextView = itemView.findViewById(R.id.Workoutinf)
+    // ViewHolder class to hold views for each item
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val categoryImage: ImageView = itemView.findViewById(R.id.workcatimg)
+        val exerciseCount: TextView = itemView.findViewById(R.id.noexcercise)
+        val workoutInfo: TextView = itemView.findViewById(R.id.Workoutinf)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewholderClass {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.workout_category, parent, false)
-        return ViewholderClass(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.workout_category, parent, false)
+        return ViewHolder(view)
     }
 
-    override fun getItemCount(): Int {
-        return workoutcategorydatalist.size
-    }
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val item = workoutCategoryList[position]
 
-    override fun onBindViewHolder(holder: ViewholderClass, position: Int) {
-        val item = workoutcategorydatalist[position]
-        holder.rvImage.setImageResource(item.workoutcatimg) // Adjust based on your model
-        holder.rvduration.text = item.duration.toString()
-        holder.rvkcal.text = item.cal.toString()
-        holder.rvcnt.text = item.excercisecnt.toString()
-        holder.rvinfo.text =item.workoutinfo.toString()
+        // Bind data to views
+        holder.categoryImage.setImageResource(item.workoutcatimg)
+        holder.exerciseCount.text = "${item.excercisecnt} exercises"
+        holder.workoutInfo.text = item.workoutinfo
 
-        holder.itemView.setOnClickListener{
+        // Handle item click
+        holder.itemView.setOnClickListener {
             onItemClick?.invoke(item)
         }
     }
+
+    override fun getItemCount(): Int = workoutCategoryList.size
 }

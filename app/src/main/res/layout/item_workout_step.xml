@@ -1,52 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="4dp">
+    card_view:cardElevation="4dp"
+    card_view:cardCornerRadius="12dp"
+    android:layout_margin="12dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="12dp"
-        android:gravity="center_vertical">
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="#f1c6fe">
 
-        <!-- Thumbnail (optional) -->
-        <ImageView
-            android:id="@+id/stepThumbnail"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginEnd="12dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/placeholder"
-            android:background="@drawable/image_bg_rounded" />
-
-        <!-- Step Name and Duration -->
-        <LinearLayout
-            android:layout_width="0dp"
+        <EditText
+            android:id="@+id/etStepDesc"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:hint="Step Description (optional)"
+            android:backgroundTint="@android:color/darker_gray"
+            android:padding="12dp"
+            android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/stepName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Jumping Jacks"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/black" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="8dp" />
 
-            <TextView
-                android:id="@+id/stepDuration"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Duration: 30s"
-                android:textSize="14sp"
-                android:textColor="#777777" />
-        </LinearLayout>
+        <EditText
+            android:id="@+id/etStepLink"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="YouTube Link"
+            android:inputType="textUri"
+            android:backgroundTint="@android:color/darker_gray"
+            android:padding="12dp"
+            android:textSize="16sp" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -1,45 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:background="#121323"
+    android:background="#0D0D1A"
     tools:context=".activities.WorkoutDetailsActivity">
 
-    <!-- Workout Image -->
-    <ImageView
-        android:id="@+id/workoutimg"
+    <!-- Workout Image with Overlay -->
+    <FrameLayout
+        android:id="@+id/imageFrame"
         android:layout_width="match_parent"
-        android:layout_height="220dp"
-        android:layout_marginBottom="16dp"
-        android:scaleType="centerCrop"
-        android:contentDescription="Workout Image"
-        tools:src="@drawable/placeholder" />
+        android:layout_height="240dp">
 
-    <!-- Workout Description -->
-    <TextView
-        android:id="@+id/workoutdescription"
+        <ImageView
+            android:id="@+id/workoutImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:contentDescription="Workout Image"
+            tools:src="@drawable/placeholder"
+            android:layout_margin="16dp"/>
+
+        <!-- Gradient Overlay -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/gradient_overlay" />
+    </FrameLayout>
+
+    <!-- Content Card -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_below="@id/imageFrame"
+        android:layout_above="@id/btnEditWorkout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="16dp"
+        android:backgroundTint="#1A1B2E"
+        android:clipToPadding="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- Workout Name -->
+            <TextView
+                android:id="@+id/workoutName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Workout Type"
+                android:textColor="#FFFFFF"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.05"
+                android:shadowColor="#80000000"
+                android:shadowDx="0"
+                android:shadowDy="2"
+                android:shadowRadius="4"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#444"
+                android:layout_marginBottom="10dp" />
+
+            <!-- Workout Description -->
+            <TextView
+                android:id="@+id/workoutDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add your description here"
+                android:textColor="#CCCCCC"
+                android:textSize="15sp"
+                android:lineSpacingExtra="6dp"
+                android:layout_marginBottom="14dp" />
+
+            <!-- RecyclerView for Steps -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/stepsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:clipToPadding="false"
+                tools:listitem="@layout/item_workout_step" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Edit Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnEditWorkout"
+        style="@style/Widget.MaterialComponents.Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Full Body Strength and Conditioning"
-        android:textColor="@android:color/white"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:lineSpacingExtra="4dp"
-        android:layout_marginBottom="12dp"
-        android:maxLines="3"
-        android:ellipsize="end" />
-
-    <!-- RecyclerView for Exercises -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/workoutdetailsrv"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:clipToPadding="false"
-        android:paddingBottom="8dp"
-        tools:listitem="@layout/item_workout_step" />
-</LinearLayout>
+        android:text="✏️ Edit Workout"
+        android:textColor="#121212"
+        android:backgroundTint="#FFBB33"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="20dp"
+        android:elevation="10dp" />
+</RelativeLayout>

@@ -5,7 +5,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class WorkoutDetailsClass(
-    val title: String,
-    val imageResId: Int,
-    val youtubeUrl: String = ""
+    var name: String = "",                     // Name of the workout (mandatory)
+    var imageUrl: String = "",                 // Optional image URL
+    var description: String = "",              // Description of the workout
+    var steps: List<WorkoutStep> = emptyList() // List of steps (each with video, note, description)
 ) : Parcelable

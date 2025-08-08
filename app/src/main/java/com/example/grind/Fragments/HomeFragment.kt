@@ -1,62 +1,42 @@
 package com.example.grind.Fragments
 
+import com.example.grind.activities.WorkoutDetailsActivity
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.grind.R
-import com.example.grind.activities.WorkoutDetailsActivity
+import com.example.grind.activities.AddWorkoutActivity
 import com.example.grind.adapter.WorkoutCategoryAdapterClass
 import com.example.grind.models.WorkoutCategoryClass
-import java.util.Locale
+import com.example.grind.models.WorkoutDetailsClass
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
+import java.util.*
 
 class HomeFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: WorkoutCategoryAdapterClass
+    private lateinit var searchView: SearchView
     private lateinit var dataList: ArrayList<WorkoutCategoryClass>
     private lateinit var originalList: ArrayList<WorkoutCategoryClass>
-    private lateinit var imageList: Array<Int>
-    private lateinit var duration: Array<Int>
-    private lateinit var cal: Array<Int>
-    private lateinit var workoutdesc: Array<String>
-    private lateinit var workoutinfo: Array<String>
-    private lateinit var noexercise: Array<Int>
-    private lateinit var searchView: SearchView
-    private lateinit var adapter: WorkoutCategoryAdapterClass
+
+    private val workoutMap: MutableMap<String, WorkoutDetailsClass> = mutableMapOf()
+    private val workoutIdMap: MutableMap<String, String> = mutableMapOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        imageList = arrayOf(
-            R.drawable.pic_1,
-            R.drawable.pic_1_1,
-            R.drawable.pic_1_2,
-            R.drawable.pic_1_3,
-            R.drawable.pic_2,
-            R.drawable.pic_2_1,
-            R.drawable.pic_2_2,
-            R.drawable.pic_2_3,
-            R.drawable.pic_2_4,
-            R.drawable.pic_3,
-            R.drawable.pic_3_1,
-            R.drawable.pic_3_2,
-            R.drawable.pic_3_3,
-            R.drawable.pic_3_4
-        )
-        duration = arrayOf(65, 80, 100, 70, 80, 90, 50, 60, 10, 12, 13, 14, 15, 18)
-        cal = arrayOf(500, 800, 2000, 800, 900, 600, 300, 822, 145, 624, 87, 96, 75, 788)
-        noexercise = arrayOf(65, 80, 100, 70, 80, 90, 50, 60, 10, 12, 13, 14, 15, 18)
-        workoutinfo = arrayOf(
-            "FullBodyWorkout", "UpperBodyWorkout", "LowerBodyWorkout", "Chestworkout",
-            "Legworkout", "BackWorkout", "HipWorkout", "WaistWorkout", "bicepWorkout",
-            "tricepworkout", "Abdomenworkout", "ShoulderWorkout", "ArmWorkout", "AnkleWorkout"
-        )
-
         dataList = arrayListOf()
         originalList = arrayListOf()
     }
@@ -64,43 +44,77 @@ class HomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
-        // Initialize workoutdesc here since getString() requires attached context
-        workoutdesc = arrayOf(
-            getString(R.string.desc_full_body_workout),
-            getString(R.string.desc_upper_body_workout),
-            getString(R.string.desc_lower_body_workout),
-            getString(R.string.desc_chest_workout),
-            getString(R.string.desc_leg_workout),
-            getString(R.string.desc_back_workout),
-            getString(R.string.desc_hip_workout),
-            getString(R.string.desc_waist_workout),
-            getString(R.string.desc_bicep_workout),
-            getString(R.string.desc_tricep_workout),
-            getString(R.string.desc_abdomen_workout),
-            getString(R.string.desc_shoulder_workout),
-            getString(R.string.desc_arm_workout),
-            getString(R.string.desc_ankle_workout)
-        )
+        val imageView = view.findViewById<ImageView>(R.id.imageprofile)
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+
+        if (userId != null) {
+            val userRef = FirebaseDatabase.getInstance()
+                .getReference("Users")
+                .child(userId)
+                .child("profilePic")
+
+            userRef.get().addOnSuccessListener { snapshot ->
+                if (!isAdded) return@addOnSuccessListener
+                val profilePicUrl = snapshot.getValue(String::class.java)
+                if (!profilePicUrl.isNullOrEmpty()) {
+                    Glide.with(requireContext())
+                        .load(profilePicUrl)
+                        .placeholder(R.drawable.placeholder)
+                        .into(imageView)
+                } else {
+                    Log.w("HomeFragment", "No profile picture found.")
+                }
+            }.addOnFailureListener {
+                if (!isAdded) return@addOnFailureListener
+                Log.e("HomeFragment", "Failed to fetch profile picture: ${it.message}")
+            }
+        }
 
         recyclerView = view.findViewById(R.id.workoutcategoryrv)
         searchView = view.findViewById(R.id.home_search)
+        val fab: FloatingActionButton = view.findViewById(R.id.fabAddWorkout)
+
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.setHasFixedSize(true)
-
-        getData()
 
         adapter = WorkoutCategoryAdapterClass(dataList)
         recyclerView.adapter = adapter
 
-        adapter.onItemClick = {
-            val intent = Intent(requireContext(), WorkoutDetailsActivity::class.java)
-            intent.putExtra("android", it)
-            startActivity(intent)
+        adapter.onItemClick = onItemClick@{ selectedCategory ->
+            if (!isAdded) return@onItemClick
+            val categoryName = selectedCategory.workoutinfo
+            val workout = workoutMap[categoryName]
+            val workoutId = workoutIdMap[categoryName] ?: ""
+
+            if (workout != null && workoutId.isNotEmpty()) {
+                val intent = Intent(requireContext(), WorkoutDetailsActivity::class.java)
+                intent.putExtra("workoutData", workout)
+                intent.putExtra("workoutId", workoutId)
+                intent.putExtra("workoutName", categoryName)
+                startActivity(intent)
+            } else {
+                Toast.makeText(requireContext(), "Workout details not found.", Toast.LENGTH_SHORT).show()
+            }
         }
 
+        fab.setOnClickListener {
+            if (!isAdded) return@setOnClickListener
+            startActivity(Intent(requireContext(), AddWorkoutActivity::class.java))
+        }
+
+        setupSearch()
+        return view
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadWorkoutCategories()
+    }
+
+    private fun setupSearch() {
         searchView.clearFocus()
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -126,22 +140,62 @@ class HomeFragment : Fragment() {
                 return false
             }
         })
-
-        return view
     }
 
-    private fun getData() {
-        for (i in imageList.indices) {
-            val dataclass = WorkoutCategoryClass(
-                imageList[i],
-                duration[i],
-                noexercise[i],
-                cal[i],
-                workoutinfo[i],
-                workoutdesc[i]
-            )
-            dataList.add(dataclass)
-        }
-        originalList.addAll(dataList)
+    private fun loadWorkoutCategories() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val dbRef = FirebaseDatabase.getInstance().getReference("user_workouts").child(userId)
+
+        dbRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (!isAdded) return
+                dataList.clear()
+                originalList.clear()
+                workoutMap.clear()
+                workoutIdMap.clear()
+
+                if (!snapshot.exists()) {
+                    Toast.makeText(requireContext(), "No workouts found.", Toast.LENGTH_SHORT).show()
+                    adapter.notifyDataSetChanged()
+                    return
+                }
+
+                for (categorySnapshot in snapshot.children) {
+                    val categoryName = categorySnapshot.key ?: continue
+
+                    val validWorkouts = mutableListOf<Pair<String, WorkoutDetailsClass>>()
+                    for (workoutSnapshot in categorySnapshot.children) {
+                        val workout = workoutSnapshot.getValue(WorkoutDetailsClass::class.java)
+                        val workoutId = workoutSnapshot.key
+                        if (workout != null && workoutId != null) {
+                            validWorkouts.add(workoutId to workout)
+                        }
+                    }
+
+                    if (validWorkouts.isNotEmpty()) {
+                        val (workoutId, workout) = validWorkouts.first()
+
+                        workoutMap[categoryName] = workout
+                        workoutIdMap[categoryName] = workoutId
+
+                        val workoutCategory = WorkoutCategoryClass(
+                            workoutcatimg = R.drawable.placeholder,
+                            excercisecnt = validWorkouts.size,
+                            workoutinfo = categoryName
+                        )
+                        dataList.add(workoutCategory)
+                    }
+                }
+
+                originalList.addAll(dataList)
+                adapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                if (!isAdded) return
+                Toast.makeText(requireContext(), "Failed to load workouts: ${error.message}", Toast.LENGTH_SHORT).show()
+                Log.e("HomeFragment", "Database error: ${error.details}")
+            }
+        })
     }
 }

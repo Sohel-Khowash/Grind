@@ -5,4 +5,7 @@
     <color name="blue">#0262F5</color>
     <color name="red">#FF4E57</color>
     <color name="teal">#018786</color>
+    <color name="bgcolor">#222021</color>
+    <color name= "buttoncolor">#e2fe14</color>
+    <color name="teal_200">#03DAC5</color>
 </resources>
